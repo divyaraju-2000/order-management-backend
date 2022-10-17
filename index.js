@@ -5,7 +5,7 @@ import cors from "cors";
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
-const PORT = 4050;
+
 const app = express();
 dotenv.config();
 app.use(cors());
@@ -190,4 +190,4 @@ app.delete("/deletefood/:id",async function(req,res){
         res.send(deleteFood);
     }
 })
-app.listen(PORT, () =>{console.log(`App is running at ${PORT}`)});
+app.listen(process.env.PORT, () =>{console.log(`App is running at ${process.env.PORT}`)});
