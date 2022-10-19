@@ -47,7 +47,7 @@ app.post("/createfood", async function(req,res){
 app.get("/food",auth, async function(req,res){
     const result = await client.db("CRM").collection("food").find({}).toArray();
     res.send(result);
-    console.log(result);
+    // console.log(result);
 });
 
 app.get("/food/:id", async function(req,res){
@@ -68,26 +68,38 @@ app.patch("/updatefood/:id", async function(req,res){
 
 app.post("/updateCarts", async function(req,res){
     const data = req.body;
-    const cartDB = await client.db("CRM").collection("carts").findOne({food:data.food});
-    const userToken = await client.db("CRM").collection("session").findOne({token:data.token});
-    console.log("data",data)
     console.log(data.food)
-    if(!cartDB  && userToken){
+    const cartDB = await client.db("CRM").collection("carts").find({$and:[{user:data.user},{food:data.food}]}).toArray();
+    const userToken = await client.db("CRM").collection("session").findOne({username:data.user});
+    console.log("data",cartDB)
+    console.log("usertoken",userToken)
+    if(!userToken ){
 
-        const result = await client.db("CRM").collection("carts").insertOne(data);
-        res.send(result);
-        console.log(result);
+        res.status(401).send({msg : "Invalid"})
     }
     else{
-        res.status(401).send({msg : "An error occured.The Cart is already addded!!"})
+        if(cartDB.length == 0  ){
+            const result = await client.db("CRM").collection("carts").insertOne(data);
+            res.send(result);
+            console.log("updateCarts",result);
+        }  
+        else{
+            console.log("false")
+             
+            res.status(404).send({msg:"You have the dish already in your cart"})
+        }        
     }
 });
 
 app.get("/getCarts", async function(req,res){
-    const carts = await client.db("CRM").collection("carts").find({}).toArray();
+    const token = req.header('user');
+    // console.log(token)
+    const carts = await client.db("CRM").collection("carts").find({user:token}).toArray();
     res.send(carts);
-    console.log(carts);
+    // console.log("carts",carts);
 })
+
+
 
 app.delete("/deleteCarts/:id",async function(req,res){
     const {id}= req.params;
