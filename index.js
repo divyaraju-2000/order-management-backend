@@ -4,22 +4,22 @@ import dotenv from "dotenv";
 import cors from "cors";
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import FastAPI from fastapi;
-import CORSMiddleware from fastapi.middleware.cors;
+// import FastAPI from fastapi;
+// import CORSMiddleware from fastapi.middleware.cors;
 
 const app = express();
 dotenv.config();
 app.use(cors());
 app.use(express.json());
-app = FastAPI();
+// app = FastAPI();
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=['*'],
-    allow_credentials=True,
-    allow_methods=['*'],
-    allow_headers=['*']
-)
+// app.add_middleware(
+//     CORSMiddleware,
+//     allow_origins=['*'],
+//     allow_credentials=True,
+//     allow_methods=['*'],
+//     allow_headers=['*']
+// )
  
 async function createConnection(){
     const client = new MongoClient(process.env.MONGO_URL);
