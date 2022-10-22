@@ -5,7 +5,7 @@ import cors from "cors";
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import FastAPI from fastapi;
-import CORSMiddleware from FastAPI.middleware.cors;
+import CORSMiddleware from fastapi.middleware.cors;
 
 const app = express();
 dotenv.config();
@@ -18,7 +18,7 @@ app.add_middleware(
     allow_origins=['*'],
     allow_credentials=True,
     allow_methods=['*'],
-    allow_hedaers=['*']
+    allow_headers=['*']
 )
  
 async function createConnection(){
