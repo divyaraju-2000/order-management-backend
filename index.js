@@ -49,9 +49,9 @@ app.get("/", async function(req,res){
 
 app.post("/createfood", async function(req,res){
     const data =  req.body;
+    res.set('Access-Control-Allow-Origin', 'https://order-management-backend.herokuapp.com');
     const result = await client.db("CRM").collection("food").insertOne(data);
     res.send(result);
-    res.set('Access-Control-Allow-Origin', 'https://order-management-backend.herokuapp.com');
 
     console.log(result);
 })
@@ -71,17 +71,18 @@ app.get("/food/:id", async function(req,res){
 app.patch("/updatefood/:id", async function(req,res){
     const {id} =req.params;
     const data = req.body;
+    res.set('Access-Control-Allow-Origin', 'https://order-management-backend.herokuapp.com');
     const DBlike = await client.db("CRM").collection("food").findOne({_id:ObjectId(id)});
     const updateLike = !(DBlike.likes);
     const result = await client.db("CRM").collection("food").updateOne({_id:ObjectId(id)}, {$set: {likes : updateLike}});
     res.send(result);
-    res.set('Access-Control-Allow-Origin', 'https://order-management-backend.herokuapp.com');
 
     console.log("updated"-result,DBlike.likes,updateLike);
 })
 
 app.post("/updateCarts", async function(req,res){
     const data = req.body;
+    res.set('Access-Control-Allow-Origin', 'https://order-management-backend.herokuapp.com');
     console.log(data.food)
     const cartDB = await client.db("CRM").collection("carts").find({$and:[{user:data.user},{food:data.food}]}).toArray();
     const userToken = await client.db("CRM").collection("session").findOne({username:data.user});
@@ -95,7 +96,6 @@ app.post("/updateCarts", async function(req,res){
         if(cartDB.length == 0  ){
             const result = await client.db("CRM").collection("carts").insertOne(data);
             res.send(result);
-            res.set('Access-Control-Allow-Origin', 'https://order-management-backend.herokuapp.com');
 
             console.log("updateCarts",result);
         }  
@@ -119,15 +119,16 @@ app.get("/getCarts", async function(req,res){
 
 app.delete("/deleteCarts/:id",async function(req,res){
     const {id}= req.params;
+    res.set('Access-Control-Allow-Origin', 'https://order-management-backend.herokuapp.com');
     const deleteCarts = await client.db("CRM").collection("carts").deleteOne({_id:ObjectId(id)});
     res.send(deleteCarts);
-    res.set('Access-Control-Allow-Origin', 'https://order-management-backend.herokuapp.com');
 
     console.log(deleteCarts);
 })
 
 app.post("/updateuser", async function(req,res){
     const data = req.body;
+    res.set('Access-Control-Allow-Origin', 'https://order-management-backend.herokuapp.com');
     const result = await client.db("CRM").collection("orderfood").insertOne(data);
     res.send(result);
     
@@ -137,7 +138,6 @@ app.post("/updateuser", async function(req,res){
         const updateQuantity = await client.db("CRM").collection("food").updateOne({name:data.food},{$set:{available:quantity}});
         console.log("quantityUpdated",quantityDB,quantity)
     }
-    res.set('Access-Control-Allow-Origin', 'https://order-management-backend.herokuapp.com');
     console.log(result);
 })
 
@@ -145,13 +145,13 @@ app.patch("/updatesfood/:name", async function(req,res){
     const data = req.body;
     const {name} = req.params;
     console.log(name,typeof(name));
+    res.set('Access-Control-Allow-Origin', 'https://order-management-backend.herokuapp.com');
     const food = await client.db("CRM").collection("food").findOne({name:name});
     console.log("food",food);
     const foodId = food._id;
     
     const result = await client.db("CRM").collection("food").updateOne({_id:ObjectId(foodId)},{$set :data});
     res.send(result);
-    res.set('Access-Control-Allow-Origin', 'https://order-management-backend.herokuapp.com');
 
 
    
@@ -169,6 +169,7 @@ async function genHashedPassword(password){
 app.post("/users/register",async function(req,res){
     const {name,username,password} = req.body;
    console.log(username);
+   res.set('Access-Control-Allow-Origin', 'https://order-management-backend.herokuapp.com');
     const userDB = await client.db("CRM").collection("users").findOne({username:username});
     console.log(userDB)
     if(!userDB){
@@ -181,7 +182,6 @@ app.post("/users/register",async function(req,res){
         isAdmin:false
     });
     res.send(result);
-    res.set('Access-Control-Allow-Origin', 'https://order-management-backend.herokuapp.com');
 
     console.log(result);
 }
@@ -192,6 +192,7 @@ else{
 
 app.post("/users/signin", async function(req,res){
     const {username,password} = req.body;
+    res.set('Access-Control-Allow-Origin', 'https://order-management-backend.herokuapp.com');
     const userDB = await client.db("CRM").collection("users").findOne({username:username});
     if(userDB){
         const storedPassword = userDB.password.toString();
@@ -206,7 +207,6 @@ app.post("/users/signin", async function(req,res){
                 token:token
             });
             res.send({msg:" Successfully signed in", token:token, isAdmin:userDB.isAdmin})
-            res.set('Access-Control-Allow-Origin', 'https://order-management-backend.herokuapp.com');
         }
         else{
             res.status(404).send({msg: "Invalid Credentials"})
@@ -221,11 +221,11 @@ app.delete("/deletefood/:id",async function(req,res){
     const token = req.header("x-auth-token");
     const {id}=req.params;
     console.log(token);
+    res.set('Access-Control-Allow-Origin', 'https://order-management-backend.herokuapp.com');
     const userSession = await client.db("CRM").collection("session").findOne({token:token});
     if(userSession && userSession.isAdmin){
         const deleteFood = await client.db("CRM").collection("food").deleteOne({_id:ObjectId(id)})
         res.send(deleteFood);
-        res.set('Access-Control-Allow-Origin', 'https://order-management-backend.herokuapp.com');
 
     }
 })
