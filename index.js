@@ -192,7 +192,7 @@ else{
 
 app.post("/users/signin", async function(req,res){
     const {username,password} = req.body;
-    res.set('Access-Control-Allow-Origin', 'https://order-management-backend.herokuapp.com');
+    res.set('Access-Control-Allow-Origin', 'http://localhost:4050');
     const userDB = await client.db("CRM").collection("users").findOne({username:username});
     if(userDB){
         const storedPassword = userDB.password.toString();
