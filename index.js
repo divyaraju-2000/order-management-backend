@@ -229,4 +229,4 @@ app.delete("/deletefood/:id",async function(req,res){
 
     }
 })
-app.listen(process.env.PORT, () =>{console.log(`App is running at ${process.env.PORT}`)});
+app.listen(process.env.PORT || 3000, () =>{console.log(`App is running at ${process.env.PORT}`)});
